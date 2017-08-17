@@ -1,6 +1,13 @@
 
 #include "player_ui_gtk.h"
+
+#if defined GDK_WINDOWING_WIN32
+#include <gdk/gdkwin32.h>
+#elif defined GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#elif defined GDK_WINDOWING_QUARTZ
+#include <gdk/gdkquartz.h>
+#endif
 
 gint screen_width, screen_height;
 GdkCursor *cur;
@@ -42,7 +49,14 @@ void on_play_widget_button_press(GtkWidget *widget, GdkEvent *event, gpointer da
 
 void open_media(const char *uri)
 {
+#if defined (GDK_WINDOWING_WIN32)
+    wid = GDK_WINDOW_HWND(gtk_widget_get_window(player_widget));
+#elif defined (GDK_WINDOWING_X11)
     wid = GDK_WINDOW_XID(gtk_widget_get_window(player_widget));
+#elif defined
+	wid = gdk_quartz_window_get_nsview(gtk_widget_get_window(player_widget));
+#endif
+
     printf("######################## open media %s.\n", uri);
 	char play_str[128] = {'\0'};
 

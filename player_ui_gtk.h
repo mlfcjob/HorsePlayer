@@ -23,7 +23,14 @@ gboolean g_is_fullscreen, g_is_moving;
 GtkWidget *player_widget, *hbox, *vbox, *menubar;
 GtkAdjustment  *process_adjust;
 
+#if defined (GDK_WINDOWING_WIN32)
+HWND wid  = -1;
+#elif defined (GDK_WINDOWING_X11)
 uint64_t wid = -1;
+#elif defined (GDK_WINDOWING_QUARTZ)
+uint64_t wid = -1;
+#endif
+
 
 GtkWidget *pause_button;
 GtkWidget *stop_button;
