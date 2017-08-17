@@ -24,6 +24,7 @@ GtkWidget *player_widget, *hbox, *vbox, *menubar;
 GtkAdjustment  *process_adjust;
 
 #if defined (GDK_WINDOWING_WIN32)
+#include <windef.h>
 HWND wid  = -1;
 #elif defined (GDK_WINDOWING_X11)
 uint64_t wid = -1;
