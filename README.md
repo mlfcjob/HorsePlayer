@@ -1,2 +1,0 @@
-# HorsePlayer
-a player
