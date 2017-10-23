@@ -4,9 +4,12 @@
 #pragma comment(lib, "avformat.lib")
 #pragma comment(lib, "avutil.lib")
 #pragma comment(lib, "avcodec.lib")
+#pragma comment(lib, "swscale.lib")
+
 extern "C"
 {
 #include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
 }
 
 #define NEW_API 1
@@ -72,6 +75,11 @@ int main(int argc, char *argv[])
 	}
 
 	AVFrame *yuv = av_frame_alloc();
+	SwsContext *cCtx = NULL;
+	int outwidth = 640;
+	int outheight = 480;
+
+	char *rgb = new char[outwidth * outheight * 4];
 
 	for (;;) {
 		AVPacket pkt;
@@ -103,10 +111,50 @@ int main(int argc, char *argv[])
 		}
 #endif
 
+		cCtx = sws_getCachedContext(cCtx,
+			videoCtx->width,
+			videoCtx->height,
+			videoCtx->pix_fmt,
+			outwidth,
+			outheight,
+			AV_PIX_FMT_BGRA,
+			SWS_BICUBIC,
+			NULL,
+			NULL,
+			NULL);
+
+		if (!cCtx) {
+			printf("sws_getCachedContext failed! \n");
+			break;
+		}
+
+		uint8_t *data[AV_NUM_DATA_POINTERS] = {0};
+		data[0] = (uint8_t *)rgb;
+
+		int linesize[AV_NUM_DATA_POINTERS] = { 0 };
+		linesize[0] = outwidth * 4;
+
+		int h = sws_scale(cCtx, yuv->data, yuv->linesize, 0, videoCtx->height,
+			 data,
+			 linesize);
+
+		if (h > 0) {
+			printf("(%d) .\n", h);
+		}
 		//printf("pts = %d.\n", pts);
 		av_packet_unref(&pkt);
 	}
 	
+
+	if (cCtx)
+	{
+		sws_freeContext(cCtx);
+		cCtx = NULL;
+	}
+
+	if (rgb) {
+		delete rgb;
+	}
 
 	avformat_close_input(&ic);
 
