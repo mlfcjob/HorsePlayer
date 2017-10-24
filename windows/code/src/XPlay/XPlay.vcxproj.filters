@@ -55,6 +55,9 @@
     <ClCompile Include="GeneratedFiles\qrc_XPlay.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="XFFmpeg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="XPlay.h">
@@ -70,6 +73,9 @@
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_XPlay.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XFFmpeg.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
