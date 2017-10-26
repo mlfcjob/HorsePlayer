@@ -13,7 +13,7 @@ static double r2d(AVRational r)
 int main(int argc, char *argv[])
 {
 
-	if (XFFmpeg::get()->Open("2504.mkv"))
+	/*if (XFFmpeg::get()->Open("2504.mkv"))
 	{
 		printf("Open sucess .\n");
 	}
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 		}
 
 		av_packet_unref(&pkt);
-	}
+	}*/
 
 
 	QApplication a(argc, argv);

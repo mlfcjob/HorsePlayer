@@ -58,6 +58,9 @@
     <ClCompile Include="XFFmpeg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VideoWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="XPlay.h">
@@ -77,5 +80,17 @@
     <ClInclude Include="XFFmpeg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="XPlay.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\player.ico" />
   </ItemGroup>
 </Project>

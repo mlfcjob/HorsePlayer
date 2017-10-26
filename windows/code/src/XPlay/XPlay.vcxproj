@@ -82,6 +82,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VideoWidget.cpp" />
     <ClCompile Include="XFFmpeg.cpp" />
     <ClCompile Include="XPlay.cpp" />
   </ItemGroup>
@@ -111,6 +112,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_XPlay.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="VideoWidget.h" />
     <ClInclude Include="XFFmpeg.h" />
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +127,12 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="XPlay.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\player.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
