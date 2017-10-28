@@ -23,7 +23,7 @@ XFFmpeg::~XFFmpeg()
 }
 
 
-bool XFFmpeg::Open(const char *path)
+int XFFmpeg::Open(const char *path)
 {
 	Close();
 
@@ -33,7 +33,7 @@ bool XFFmpeg::Open(const char *path)
 		mutex.unlock();
 		av_strerror(re, errorbuf, sizeof(errorbuf));
 		printf("%s open failed: %s \n", path, errorbuf);
-		return false;
+		return 0;
 	}
 
 	for (int i = 0; i < ic->nb_streams; i++)
@@ -48,7 +48,7 @@ bool XFFmpeg::Open(const char *path)
 			if (!codec) {
 				printf("video code not find. \n");
 				mutex.unlock();
-				return false;
+				return 0;
 			}
 
 			int err = avcodec_open2(enc, codec, NULL);
@@ -56,7 +56,7 @@ bool XFFmpeg::Open(const char *path)
 				mutex.unlock();
 				av_strerror(err, errorbuf, sizeof(errorbuf));
 				printf("open decode error: %s. \n", errorbuf);
-				return false;
+				return 0;
 			}
 			printf("open decoder success. \n");
 		}
@@ -67,7 +67,7 @@ bool XFFmpeg::Open(const char *path)
 
 	mutex.unlock();
 
-	return true;
+	return totalMs;
 }
 
 bool XFFmpeg::Close()
@@ -147,6 +147,8 @@ AVFrame * XFFmpeg::Decode(const AVPacket *pkt)
 	}
 
 	mutex.unlock();
+
+	pts = yuv->pts * r2d(ic->streams[pkt->stream_index]->time_base) * 1000;
 	return yuv;
 }
 
