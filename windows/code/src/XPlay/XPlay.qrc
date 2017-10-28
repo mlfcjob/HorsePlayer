@@ -1,10 +1,10 @@
 <RCC>
   <qresource prefix="XPlay">
+    <file>Resources/Play_Disabled.ico</file>
+    <file>Resources/Play_Hot.ico</file>
+    <file>Resources/Play_Normal.ico</file>
     <file>Resources/player.ico</file>
-    <file>Resources/open1.jpg</file>
-    <file>Resources/play1.jpg</file>
-    <file>Resources/open.jpg</file>
-    <file>Resources/pause.gif</file>
-    <file>Resources/play.jpg</file>
+    <file>Resources/open_hot.ico</file>
+    <file>Resources/open_normal.ico</file>
   </qresource>
 </RCC>
