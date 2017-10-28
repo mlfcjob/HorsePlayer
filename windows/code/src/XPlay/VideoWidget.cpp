@@ -1,11 +1,14 @@
 #include "VideoWidget.h"
 #include <QPainter>
 #include "XFFmpeg.h"
+#include "XVideoThread.h"
 
 VideoWidget::VideoWidget(QWidget *p) : QOpenGLWidget(p)
 {
-	XFFmpeg::get()->Open("2504.mkv");
+	//XFFmpeg::get()->Open("Wedding.mp4");
 	startTimer(20);
+
+	XVideoThread::Get()->start();
 }
 
 
@@ -23,7 +26,7 @@ void VideoWidget::paintEvent(QPaintEvent *e)
 		image = new QImage(buf, width(), height(), QImage::Format_ARGB32);
 	}
 
-	AVPacket pkt = XFFmpeg::get()->Read();
+	/*AVPacket pkt = XFFmpeg::get()->Read();
 	if (pkt.stream_index != XFFmpeg::get()->videoStream)
 	{
 		av_packet_unref(&pkt);
@@ -34,9 +37,9 @@ void VideoWidget::paintEvent(QPaintEvent *e)
 	AVFrame *yuv =  XFFmpeg::get()->Decode(&pkt);
 	av_packet_unref(&pkt);
 
-	if (yuv == NULL)  return;
+	if (yuv == NULL)  return;*/
 
-	XFFmpeg::get()->ToRGB(yuv, (char*)image->bits(), width(), height());
+	XFFmpeg::get()->ToRGB((char*)image->bits(), width(), height());
 
 	QPainter  painter;
 	painter.begin(this);

@@ -73,5 +73,25 @@ QPushButton::hover {border-image: url(:/XPlay/Resources/Play_Disabled.ico);}</st
  <resources>
   <include location="XPlay.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>openButton</sender>
+   <signal>clicked()</signal>
+   <receiver>XPlayClass</receiver>
+   <slot>open()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>329</x>
+     <y>541</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>354</x>
+     <y>-99</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>open()</slot>
+ </slots>
 </ui>

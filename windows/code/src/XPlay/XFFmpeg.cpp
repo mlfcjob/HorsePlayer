@@ -5,6 +5,11 @@
 #pragma comment(lib, "avcodec.lib")
 #pragma comment(lib, "swscale.lib")
 
+static double r2d(AVRational r)
+{
+	return r.num == 0 || r.den == 0 ? 0 : (double)r.num / (double)r.den;
+}
+
 
 XFFmpeg::XFFmpeg()
 {
@@ -37,6 +42,8 @@ bool XFFmpeg::Open(const char *path)
 				
 		if (enc->codec_type == AVMEDIA_TYPE_VIDEO){
 			videoStream = i;
+
+			fps = r2d(ic->streams[i]->avg_frame_rate);
 			AVCodec *codec = avcodec_find_decoder(enc->codec_id);
 			if (!codec) {
 				printf("video code not find. \n");
@@ -56,6 +63,8 @@ bool XFFmpeg::Open(const char *path)
 	}
 
 	totalMs = (ic->duration / AV_TIME_BASE) * 1000;  //ms
+
+
 	mutex.unlock();
 
 	return true;
@@ -145,15 +154,14 @@ AVFrame * XFFmpeg::Decode(const AVPacket *pkt)
 
 ////////////////////////////////////////
 ////// 转换为RGB
-////// @yuv   AVFrame  解码后的一帧数据
 ////// @out   char*    转换后数据存储指向地址
 ////// @outwidth  int   转换后的width
 ////// @outheight  int  转换后的height
-bool XFFmpeg::ToRGB(const AVFrame *yuv, char *out, int outwidth, int outheight)
+bool XFFmpeg::ToRGB(char *out, int outwidth, int outheight)
 {
 	mutex.lock();
 
-	if (!ic) {
+	if (!ic || !yuv) {
 		mutex.unlock();
 		return false;
 	}

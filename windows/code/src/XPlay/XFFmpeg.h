@@ -43,11 +43,10 @@ public:
 
 	////////////////////////////////////////
 	////// 转换为RGB
-	////// @yuv   AVFrame  解码后的一帧数据
 	////// @out   char*    转换后数据存储指向地址
 	////// @outwidth  int   转换后的width
 	////// @outheight  int  转换后的height
-	bool ToRGB(const AVFrame *yuv, char *out, int outwidth, int outheight);
+	bool ToRGB(char *out, int outwidth, int outheight);
 
 	/////////////////////////////////////////////
 	///// 返回错误信息
@@ -58,6 +57,7 @@ public:
 	virtual ~XFFmpeg();
 	int totalMs = 0;
 	int  videoStream = 0;
+	int fps = 0;
 protected:
 	char errorbuf[1024];
 	AVFormatContext *ic = NULL;
