@@ -129,10 +129,10 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="XPlay.rc" />
+    <Image Include="Resources\player.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\player.ico" />
+    <ResourceCompile Include="XPlay.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
