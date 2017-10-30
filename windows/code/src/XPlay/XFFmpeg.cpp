@@ -209,6 +209,38 @@ bool XFFmpeg::ToRGB(char *out, int outwidth, int outheight)
 	return true;
 }
 
+////////////////////////////////////////
+////// 拖动视频到指定位置
+////// @pos   float     视频播放的百分比  0.0 - 1.0
+////// 
+////// @return  bool  视频跳转是否成功
+bool  XFFmpeg::Seek(float  pos)
+{
+	mutex.lock();
+	if (!ic) {
+		mutex.unlock();
+		return false;
+	}
+
+	int64_t stamp = 0;
+	stamp = pos * ic->streams[videoStream]->duration;
+
+	int re = av_seek_frame(ic, videoStream, stamp, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);
+
+	avcodec_flush_buffers(ic->streams[videoStream]->codec);
+
+	pts = stamp * r2d(ic->streams[videoStream]->time_base) * 1000;
+
+	mutex.unlock();
+
+	if (re >= 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
 
 std::string XFFmpeg::GetError()   //使用string为了线程安全
 {

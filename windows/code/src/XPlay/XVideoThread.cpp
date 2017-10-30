@@ -18,6 +18,12 @@ XVideoThread::~XVideoThread()
 void XVideoThread::run()
 {
 	while (!isexit) {
+		// ÔÝÍ£×´Ì¬
+		if (!XFFmpeg::get()->isPlay) {
+			msleep(10);
+			continue;
+		}
+
 		AVPacket pkt = XFFmpeg::get()->Read();
 		if (pkt.size <= 0) {
 			msleep(10);

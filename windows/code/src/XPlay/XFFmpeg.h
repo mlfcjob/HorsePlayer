@@ -48,6 +48,13 @@ public:
 	////// @outheight  int  转换后的height
 	bool ToRGB(char *out, int outwidth, int outheight);
 
+	////////////////////////////////////////
+	////// 拖动视频到指定位置
+	////// @pos   float     视频播放的百分比  0.0 - 1.0
+	////// 
+	////// @return  bool  视频跳转是否成功
+	bool Seek(float  pos);
+
 	/////////////////////////////////////////////
 	///// 返回错误信息
 	///// @para  NULL 
@@ -59,6 +66,7 @@ public:
 	int  videoStream = 0;
 	int fps = 0;
 	int pts = 0;
+	bool isPlay = false;
 protected:
 	char errorbuf[1024];
 	AVFormatContext *ic = NULL;

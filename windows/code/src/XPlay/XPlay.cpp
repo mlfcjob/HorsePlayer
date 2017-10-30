@@ -3,11 +3,34 @@
 #include <QMessageBox>
 #include "XFFmpeg.h"
 
+static bool isPressSlider = false;
+static bool isPlay = true;
+
+#define PAUSE "QPushButton {border-image: url(:/XPlay/Resources/Pause_Normal.ico);}"
+#define PLAY "QPushButton {border-image: url(:/XPlay/Resources/Play_Normal.ico);}"
+
 XPlay::XPlay(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
 	startTimer(40);
+}
+
+
+
+void  XPlay::play()
+{
+	isPlay = !isPlay;
+	XFFmpeg::get()->isPlay = isPlay;
+
+	if (isPlay) {
+		// 播放时将按钮设置为暂停图标
+		ui.playButton->setStyleSheet(PAUSE);
+	}
+	else {
+		// 暂停时将按钮设为播放图标
+		ui.playButton->setStyleSheet(PLAY);
+	}
 }
 
 void XPlay::open()
@@ -31,7 +54,10 @@ void XPlay::open()
 	int min = (totalMs / 1000) / 60;
 	int sec = (totalMs / 1000) % 60;
 	sprintf(buf, "%03d:%02d", min, sec);
-	ui.totaltime->setText(buf); 
+	ui.totaltime->setText(buf);
+
+    isPlay = false;
+	play();
 }
 
 XPlay::~XPlay()
@@ -46,4 +72,25 @@ void XPlay::timerEvent(QTimerEvent  *e)
 	char buf[1024] = {0};
 	sprintf(buf, "%03d:%02d", min, sec);
 	ui.playtime->setText(buf);
+
+	if (XFFmpeg::get()->totalMs > 0) {
+		float rate = (float)XFFmpeg::get()->pts / (float)XFFmpeg::get()->totalMs;
+
+		if (!isPressSlider) {
+			ui.playSlider->setValue(rate * 1000);
+		}
+	}
+}
+
+void XPlay::sliderPress()
+{
+	isPressSlider = true;
+}
+void XPlay::sliderRelease()
+{
+	isPressSlider = false;
+	float pos = 0;
+	pos = (float)ui.playSlider->value() / (float)(ui.playSlider->maximum() + 1);
+
+	XFFmpeg::get()->Seek(pos);
 }

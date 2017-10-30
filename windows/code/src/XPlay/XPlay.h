@@ -13,6 +13,9 @@ public:
 	void timerEvent(QTimerEvent  *e);
 public slots:
 	void open();
+	void play();
+	void sliderPress();
+	void sliderRelease();
 private:
 	Ui::XPlayClass ui;
 };

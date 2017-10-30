@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="XPlay">
+    <file>Resources/Pause_Normal.ico</file>
+    <file>Resources/pausehot.ico</file>
     <file>Resources/Play_Disabled.ico</file>
     <file>Resources/Play_Hot.ico</file>
     <file>Resources/Play_Normal.ico</file>
