@@ -10,6 +10,7 @@ class XPlay : public QWidget
 public:
 	XPlay(QWidget *parent = Q_NULLPTR);
 	~XPlay();
+	void resizeEvent(QResizeEvent *e);
 	void timerEvent(QTimerEvent  *e);
 public slots:
 	void open();

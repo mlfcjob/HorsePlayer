@@ -95,7 +95,7 @@ font: 63 10pt &quot;Adobe Caslon Pro&quot;;</string>
     <string>00:00:00</string>
    </property>
   </widget>
-  <widget class="QLabel" name="timelabel">
+  <widget class="QLabel" name="sp">
    <property name="geometry">
     <rect>
      <x>260</x>
