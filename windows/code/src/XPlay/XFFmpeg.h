@@ -38,8 +38,8 @@ public:
 	///////////////////////////////////
 	/////  解码一帧
     /////  @para AVPacket 一帧数据
-	/////  @return  AVFrame 解码后的一帧数据
-	AVFrame *Decode(const AVPacket *pkt);
+	/////  @return  int  返回解码的pts
+	int Decode(const AVPacket *pkt);
 
 	////////////////////////////////////////
 	////// 转换为RGB
@@ -62,15 +62,20 @@ public:
 	std::string GetError();   //使用string为了线程安全
 
 	virtual ~XFFmpeg();
-	int totalMs = 0;
+	int  totalMs = 0;
 	int  videoStream = 0;
-	int fps = 0;
-	int pts = 0;
+	int  audioStream = 1;
+	int  fps = 0;
+	int  pts = 0;
 	bool isPlay = false;
+	int  sampleRate = 48000;
+	int  sampleSize = 16;
+	int  channel    = 2;
 protected:
 	char errorbuf[1024];
 	AVFormatContext *ic = NULL;
 	AVFrame *yuv = NULL;
+	AVFrame *pcm = NULL;
 	SwsContext  *cCtx = NULL;
 	QMutex mutex;
 	XFFmpeg();

@@ -60,6 +60,49 @@ int XFFmpeg::Open(const char *path)
 			}
 			printf("open decoder success. \n");
 		}
+		else if (enc->codec_type == AVMEDIA_TYPE_AUDIO) {
+			audioStream = i;
+
+			AVCodec *codec = avcodec_find_decoder(enc->codec_id);
+
+			int err;
+			if (err = avcodec_open2(enc, codec, NULL) < 0) {
+				mutex.unlock();
+				av_strerror(err, errorbuf, sizeof(errorbuf));
+				printf("open decode error: %s. \n", errorbuf);
+				return false;
+			}
+
+			this->sampleRate = enc->sample_rate;
+			this->channel = enc->channels;
+
+			switch (enc->sample_fmt) {
+			case AV_SAMPLE_FMT_U8:          ///< unsigned 8 bits
+			case AV_SAMPLE_FMT_U8P:         ///< unsigned 8 bits, planar
+				break;
+			case AV_SAMPLE_FMT_FLTP:        ///< float, planar
+			case AV_SAMPLE_FMT_DBLP:        ///< double, planar
+			case AV_SAMPLE_FMT_FLT:         ///< float
+			case AV_SAMPLE_FMT_DBL:         ///< double
+				break;
+			case AV_SAMPLE_FMT_S64:         ///< signed 64 bits
+			case AV_SAMPLE_FMT_S64P:        ///< signed 64 bits, planar
+				break;
+			case AV_SAMPLE_FMT_S32:         ///< signed 32 bits
+			case AV_SAMPLE_FMT_S32P:        ///< signed 32 bits, planar
+				this->sampleSize = 32;
+				break;
+			case AV_SAMPLE_FMT_S16P:        ///< signed 16 bits, planar
+			case AV_SAMPLE_FMT_S16:
+				this->sampleSize = 16;
+				break;
+			default:
+				break;
+			}
+
+			printf("audio smaple_rate: %d, smapel_size: %d, channel: %d. \n", this->sampleRate, this->sampleSize, this->channel);
+
+		}
 	}
 
 	totalMs = (ic->duration / AV_TIME_BASE) * 1000;  //ms
@@ -117,8 +160,8 @@ AVPacket XFFmpeg::Read()
 ///////////////////////////////////
 /////  解码一帧
 /////  @para AVPacket 一帧数据
-/////  @return  AVFrame 解码后的一帧数据
-AVFrame * XFFmpeg::Decode(const AVPacket *pkt)
+/////  @return  int  返回解码的pts
+int XFFmpeg::Decode(const AVPacket *pkt)
 {
 	mutex.lock();
 	if (!ic) {
@@ -130,6 +173,16 @@ AVFrame * XFFmpeg::Decode(const AVPacket *pkt)
 		yuv = av_frame_alloc();
 	}
 
+	if (pcm == NULL)
+	{
+		pcm = av_frame_alloc();
+	}
+
+	AVFrame *frame = yuv;
+	if (pkt->stream_index == audioStream){
+		frame = pcm;
+	}
+
 	int re = avcodec_send_packet(ic->streams[pkt->stream_index]->codec, pkt);
 	if (re != 0) {
 		mutex.unlock();
@@ -138,7 +191,7 @@ AVFrame * XFFmpeg::Decode(const AVPacket *pkt)
 		return NULL;
 	}
 
-	re = avcodec_receive_frame(ic->streams[pkt->stream_index]->codec, yuv);
+	re = avcodec_receive_frame(ic->streams[pkt->stream_index]->codec, frame);
 	if (re != 0) {
 		mutex.unlock();
 		av_strerror(re, errorbuf, sizeof(errorbuf));
@@ -148,8 +201,12 @@ AVFrame * XFFmpeg::Decode(const AVPacket *pkt)
 
 	mutex.unlock();
 
-	pts = yuv->pts * r2d(ic->streams[pkt->stream_index]->time_base) * 1000;
-	return yuv;
+	int p = frame->pts * r2d(ic->streams[pkt->stream_index]->time_base) * 1000;
+	if (pkt->stream_index == audioStream) {
+		this->pts = p;
+	}
+
+	return p;
 }
 
 
@@ -197,12 +254,9 @@ bool XFFmpeg::ToRGB(char *out, int outwidth, int outheight)
 		              videoCtx->height,data, linesize);
 	
 	if (h <= 0) {
-		printf("(%d) .\n", h);
+		printf("scale failed (%d) .\n", h);
 		mutex.unlock();
 		return false;
-	}
-	else {
-		printf(" scale success: (%d). \n", h);
 	}
 
 	mutex.unlock();

@@ -89,6 +89,7 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VideoWidget.cpp" />
+    <ClCompile Include="XAudioPlay.cpp" />
     <ClCompile Include="XFFmpeg.cpp" />
     <ClCompile Include="XPlay.cpp" />
     <ClCompile Include="XSlider.cpp" />
@@ -122,6 +123,7 @@
     <ClInclude Include="GeneratedFiles\ui_XPlay.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="VideoWidget.h" />
+    <ClInclude Include="XAudioPlay.h" />
     <ClInclude Include="XFFmpeg.h" />
     <CustomBuild Include="XSlider.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
