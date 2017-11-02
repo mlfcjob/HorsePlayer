@@ -71,9 +71,10 @@ void XPlay::resizeEvent(QResizeEvent *e)
 
 	ui.playButton->move(this->width() / 2 + 50, this->height() - 80);
 	ui.openButton->move(this->width() / 2 - 50, this->height() - 80);
-	ui.playSlider->move(50, this->height() - 120);
+	ui.playSlider->move(10, this->height() - 120);
 	ui.playSlider->resize(this->width() - 25, ui.playSlider->height());
-	ui.playtime->move(5, ui.playButton->y());
+
+	ui.playtime->move(30, ui.playButton->y());
 	ui.sp->move(ui.playtime->x() + ui.playtime->width() + 5, ui.playtime->y());
 	ui.totaltime->move(120, ui.playButton->y());
 }
