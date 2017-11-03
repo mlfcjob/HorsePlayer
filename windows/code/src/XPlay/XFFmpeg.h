@@ -4,6 +4,7 @@ extern "C"
 {
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
+#include <libswresample/swresample.h>
 }
 
 #include <string>
@@ -46,7 +47,14 @@ public:
 	////// @out   char*    转换后数据存储指向地址
 	////// @outwidth  int   转换后的width
 	////// @outheight  int  转换后的height
+	////// @return  bool    返回是否转换成功
 	bool ToRGB(char *out, int outwidth, int outheight);
+
+	////////////////////////////////////////
+	////// 转换为PCM
+	////// @out   char*    转换后数据存储指向地址
+	////// @return  int  转换后的大小
+	int  ToPCM(char *out);
 
 	////////////////////////////////////////
 	////// 拖动视频到指定位置
@@ -77,6 +85,7 @@ protected:
 	AVFrame *yuv = NULL;
 	AVFrame *pcm = NULL;
 	SwsContext  *cCtx = NULL;
+	SwrContext  *aCtx = NULL;
 	QMutex mutex;
 	XFFmpeg();
 };

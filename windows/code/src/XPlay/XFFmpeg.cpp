@@ -4,6 +4,8 @@
 #pragma comment(lib, "avutil.lib")
 #pragma comment(lib, "avcodec.lib")
 #pragma comment(lib, "swscale.lib")
+#pragma comment(lib, "swresample.lib")
+
 
 static double r2d(AVRational r)
 {
@@ -101,7 +103,6 @@ int XFFmpeg::Open(const char *path)
 			}
 
 			printf("audio smaple_rate: %d, smapel_size: %d, channel: %d. \n", this->sampleRate, this->sampleSize, this->channel);
-
 		}
 	}
 
@@ -127,6 +128,10 @@ bool XFFmpeg::Close()
 	if (cCtx) {
 		sws_freeContext(cCtx);
 		cCtx = NULL;
+	}
+
+	if (aCtx) {
+		swr_free(&aCtx);
 	}
 	mutex.unlock();
 
@@ -262,6 +267,47 @@ bool XFFmpeg::ToRGB(char *out, int outwidth, int outheight)
 	mutex.unlock();
 	return true;
 }
+
+////////////////////////////////////////
+////// 转换为PCM
+////// @out   char*    转换后数据存储指向地址
+////// @return  int  转换后的大小
+int  XFFmpeg::ToPCM(char *out)
+{
+	mutex.lock();
+
+	if (!ic || !pcm || !out){
+		mutex.unlock();
+		return 0;
+	}
+
+	AVCodecContext *ctx = ic->streams[audioStream]->codec;
+	if (aCtx == NULL) {
+		aCtx = swr_alloc();
+		swr_alloc_set_opts(aCtx, ctx->channel_layout, AV_SAMPLE_FMT_S16, 
+			               ctx->sample_rate, ctx->channels, 
+			               ctx->sample_fmt, ctx->sample_rate,
+			               0, NULL);
+
+		swr_init(aCtx);
+	}
+
+	uint8_t *data[1];
+	data[0] = (uint8_t *)out;
+	int len = swr_convert(aCtx, data, 10000, (const uint8_t**)pcm->data, pcm->nb_samples);
+
+	if (len <= 0){
+		mutex.unlock();
+		return 0;
+	}
+
+	int outsize = av_samples_get_buffer_size(NULL, ctx->channels, pcm->nb_samples, AV_SAMPLE_FMT_S16, 0);
+
+	mutex.unlock();
+
+	return outsize;
+}
+
 
 ////////////////////////////////////////
 ////// 拖动视频到指定位置

@@ -2,6 +2,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include "XFFmpeg.h"
+#include "XAudioPlay.h"
 
 static bool isPressSlider = false;
 static bool isPlay = true;
@@ -14,6 +15,8 @@ XPlay::XPlay(QWidget *parent)
 {
 	ui.setupUi(this);
 	startTimer(40);
+
+	openFile("swxfdemo.mp4");
 }
 
 
@@ -33,9 +36,8 @@ void  XPlay::play()
 	}
 }
 
-void XPlay::open()
+void XPlay::openFile(QString name)
 {
-	QString name = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择视频文件"));
 
 	if (name.isEmpty()) {
 		return;
@@ -50,14 +52,26 @@ void XPlay::open()
 		return;
 	}
 
-	char buf[1024] = {0};
+	XAudioPlay::Get()->sampleRate = XFFmpeg::get()->sampleRate;
+	XAudioPlay::Get()->channel = XFFmpeg::get()->channel;
+	XAudioPlay::Get()->sampleSize = 16;
+	XAudioPlay::Get()->Start();
+
+	char buf[1024] = { 0 };
 	int min = (totalMs / 1000) / 60;
 	int sec = (totalMs / 1000) % 60;
 	sprintf(buf, "%03d:%02d", min, sec);
 	ui.totaltime->setText(buf);
 
-    isPlay = false;
+	isPlay = false;
 	play();
+
+}
+
+void XPlay::open()
+{
+	QString name = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择视频文件"));
+	openFile(name);
 }
 
 XPlay::~XPlay()

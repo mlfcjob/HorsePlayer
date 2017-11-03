@@ -12,6 +12,7 @@ public:
 	~XPlay();
 	void resizeEvent(QResizeEvent *e);
 	void timerEvent(QTimerEvent  *e);
+	void openFile(QString name);
 public slots:
 	void open();
 	void play();

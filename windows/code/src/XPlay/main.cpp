@@ -2,11 +2,6 @@
 #include <QtWidgets/QApplication>
 #include <QAudioOutput>
 
-#include "XFFmpeg.h"
-
-#define NEW_API 1
-
-
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
