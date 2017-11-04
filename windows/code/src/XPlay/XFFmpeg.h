@@ -36,6 +36,12 @@ public:
 	///// @return  AVPacket 一帧的结构 返回值需要用户清理
 	AVPacket Read();
 
+	/////////////////////////////
+	///// 获取包的pts
+	///// @para AVPacket   一帧数据
+	///// return int   pts
+	int GetPts(const AVPacket *pkt);
+
 	///////////////////////////////////
 	/////  解码一帧
     /////  @para AVPacket 一帧数据

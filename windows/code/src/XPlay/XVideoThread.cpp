@@ -3,7 +3,14 @@
 #include <iostream>
 #include "XAudioPlay.h"
 
+#include <list>
+
+using namespace std;
 static bool isexit = false;
+
+static list<AVPacket> videos;
+static int apts = -1;
+
 
 XVideoThread::XVideoThread()
 {
@@ -25,6 +32,19 @@ void XVideoThread::run()
 			continue;
 		}
 
+		while (videos.size() > 0)
+		{
+			AVPacket pack = videos.front();
+			int pts = XFFmpeg::get()->GetPts(&pack);
+
+			if (pts > apts) {
+				break;
+			}
+			XFFmpeg::get()->Decode(&pack);
+
+			av_packet_unref(&pack);
+			videos.pop_front();
+		}
 		// 音频缓冲区剩余空间大小
 		int free = XAudioPlay::Get()->GetFree();
 		if (free < 10000) { //实际应该是 一帧的大小
@@ -40,7 +60,7 @@ void XVideoThread::run()
 
 		//字幕暂不处理
 		if (pkt.stream_index == XFFmpeg::get()->audioStream) {
-			XFFmpeg::get()->Decode(&pkt);	
+			apts = XFFmpeg::get()->Decode(&pkt);	
 			av_packet_unref(&pkt);
 
 			int len = XFFmpeg::get()->ToPCM(out);
@@ -54,8 +74,9 @@ void XVideoThread::run()
 			continue;
 		}
 
-		XFFmpeg::get()->Decode(&pkt);
-		av_packet_unref(&pkt);
+		//XFFmpeg::get()->Decode(&pkt);
+		//av_packet_unref(&pkt);
+		videos.push_back(pkt);
 
 	/*	if (XFFmpeg::get()->fps > 0) {
 			msleep(1000 / XFFmpeg::get()->fps);

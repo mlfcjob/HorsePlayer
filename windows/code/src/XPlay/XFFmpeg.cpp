@@ -162,6 +162,26 @@ AVPacket XFFmpeg::Read()
 	return pkt;
 }
 
+
+/////////////////////////////
+///// 获取包的pts
+///// @para AVPacket   一帧数据
+///// return int   pts
+int XFFmpeg::GetPts(const AVPacket *pkt)
+{
+	mutex.lock();
+	if (!ic) {
+		mutex.unlock();
+		return -1;
+	}
+
+	int pts = (pkt->pts * r2d(ic->streams[pkt->stream_index]->time_base)) * 1000;
+
+	mutex.unlock();
+	return pts;
+
+}
+
 ///////////////////////////////////
 /////  解码一帧
 /////  @para AVPacket 一帧数据

@@ -16,7 +16,8 @@ XPlay::XPlay(QWidget *parent)
 	ui.setupUi(this);
 	startTimer(40);
 
-	openFile("swxfdemo.mp4");
+	openFile("Wedding.mp4");
+	//openFile("rtmp://live.hkstv.hk.lxdns.com/live/hks");
 }
 
 
