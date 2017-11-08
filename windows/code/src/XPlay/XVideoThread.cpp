@@ -19,6 +19,8 @@ XVideoThread::XVideoThread()
 
 XVideoThread::~XVideoThread()
 {
+	isexit = true;
+	wait();
 }
 
 
