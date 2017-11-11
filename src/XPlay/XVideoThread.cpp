@@ -49,7 +49,8 @@ void XVideoThread::run()
 		}
 		// 音频缓冲区剩余空间大小
 		int free = XAudioPlay::Get()->GetFree();
-		if (free < 10000) { //实际应该是 一帧的大小
+        float audioSize = (XAudioPlay::Get()->channel * XAudioPlay::Get()->sampleRate * XAudioPlay::Get()->sampleSize) / (float)XFFmpeg::get()->fps / 8.0;
+        if (free < audioSize) { //实际应该是 一帧的大小
 			msleep(1);
 			continue;
 		}
