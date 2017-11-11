@@ -7,14 +7,17 @@ TARGET = XPlay
 DESTDIR = ../../bin
 QT += core multimedia opengl widgets gui multimediawidgets
 CONFIG += debug console
-DEFINES += WIN64 QT_DLL QT_MULTIMEDIA_LIB QT_MULTIMEDIAWIDGETS_LIB QT_OPENGL_LIB QT_WIDGETS_LIB
-INCLUDEPATH += ./../include \
+DEFINES += QT_MULTIMEDIA_LIB QT_MULTIMEDIAWIDGETS_LIB QT_OPENGL_LIB QT_WIDGETS_LIB
+INCLUDEPATH += /usr/local/ffmpeg/include \
     ./GeneratedFiles \
     . \
     ./GeneratedFiles/Debug
-LIBS += -L"./../../lib" \
-    -lopengl32 \
-    -lglu32
+LIBS += -L"/usr/local/ffmpeg/lib" \
+    -lavformat \
+    -lavcodec  \
+    -lavutil   \
+    -lswresample \
+    -lswscale
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/debug
 OBJECTS_DIR += debug

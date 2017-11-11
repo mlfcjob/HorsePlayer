@@ -17,8 +17,8 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
-#include "videowidget.h"
-#include "xslider.h"
+#include "VideoWidget.h"
+#include "XSlider.h"
 
 QT_BEGIN_NAMESPACE
 
